@@ -1,2 +1,2 @@
 # two-dimensional-arrays
-Различни начини за извеждане на квадратна матрица.
+Different ways to display square matrix.
