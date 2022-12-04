@@ -1,32 +1,298 @@
-# Prerequisites
-*.d
+//Програма за работа с двумерни масиви, основни функции (само за квадратни матрици)
+#include <iostream>
+#include <cmath>
+using std::cout;
+using std::cin;
+using std::endl;
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+int A[50][50]; // масив (матрица) с 50 реда и 50 стълба (квадатна матрица)
+int rows = 0; // за броя редове и колони
 
-# Precompiled Headers
-*.gch
-*.pch
+void Read() // прочитане елементите на масива
+{
+	cout << "Enter how many rows the matrix will have: ";
+	cin >> rows;
+	for (int i = 0; i < rows; i++)
+		for (int j = 0; j < rows; j++)
+		{
+			cout << "A[" << i << "][" << j << "] = ";
+			cin >> A[i][j];
+		}
+}
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+void Print() // извеждане елементите на масива
+{
+	for (int i = 0; i < rows; i++)
+	{
+		for (int j = 0; j < rows; j++)
+			cout << A[i][j] << " ";
+		cout << endl;
+	}
+}
 
-# Fortran module files
-*.mod
-*.smod
+void MainDiagonal() // извеждане на елементите по главният диагонал
+{
+	int count2 = 0;
+	for (int i = 0, count1 = 1; i < rows; i++, count1++)
+	{
+		cout << A[i][i] << endl;
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+		count2 = count1;
+		while (count2) // за да могат да бъдат изведени като в матрица
+		{
+			cout << "  ";
+			count2--;
+		}
+	}
+}
 
-# Executables
-*.exe
-*.out
-*.app
+void SecondaryDiagonal() // извеждане елементите от второстепенният диагонал
+{
+	int count2 = 0;
+	for (int i = 0, count1 = rows - 1; i < rows; i++, count1--)
+	{
+		count2 = count1;
+		while (count2) // за да могат да бъдат изведени като в матрица
+		{
+			cout << "  ";
+			count2--;
+		}
+
+		cout << A[i][rows - i - 1] << endl;
+	}
+}
+
+void OverMainDiagonal() // извеждане на елементите над главният диагонал (включително и него)
+{
+	int count2 = 0;
+	for (int i = 0, count1 = 1; i < rows; i++, count1++)
+	{
+		for (int j = i; j < rows; j++)
+			cout << A[i][j] << " ";
+		cout << endl;
+
+		count2 = count1;
+		while (count2) // за да могат да бъдат изведени като в матрица
+		{
+			cout << "  ";
+			count2--;
+		}
+	}
+}
+
+void UnderMainDiagonal() // извеждане на елементите под главният диагонал (включително и него)
+{
+	for (int i = 0; i < rows; i++)
+	{
+		for (int j = 0; j < i + 1; j++)
+			cout << A[i][j] << " ";
+		cout << endl;
+	}
+}
+
+void UnderMainDiagonal2() // извеждане на елементите под главният диагонал (без него)
+{
+	for (int i = 1; i < rows; i++)
+	{
+		for (int j = 0; j < i; j++)
+			cout << A[i][j] << " ";
+		cout << endl;
+	}
+}
+
+void UnderSecondaryDiagonal() // извеждане на елементите под второстепенният диагонал, включително и него
+{
+	int count2 = 0;
+	for (int i = rows - 1, count1 = i; i >= 0; i--, count1--)
+	{
+		count2 = count1;
+		while (count2) // за да могат да бъдат изведени като в матрица
+		{
+			cout << "  ";
+			count2--;
+		}
+
+		for (int j = i; j < rows; j++)
+			cout << A[i][j] << " ";
+		cout << endl;
+	}
+}
+
+void Pyramid() // извеждане на елементите като пирамида с обърната върху нея друга пирамида
+{
+	int count = 0, intervals = 0; // count - брояч, според който ще се определят интервалите, които да се изведат, и от коя колона да започва вторият цикъл
+	for (int i = 0; i <= rows / 2; i++, count++)
+	{
+		intervals = count; // за определяне броя на интервалите, които да изведе
+		while (intervals)
+		{
+			cout << "  ";
+			intervals--;
+		}
+		for (int j = count; j < rows - count; j++) // обхождане на стълбовете в i-тия ред, докато не се достигне средата на матрицата
+			cout << A[i][j] << " ";
+		cout << endl;
+	}
+	count--; // намаляване с единица за вторият цъкъл (втората част от пирамидата (правата пирамида))
+	for (int i = count + 1; i < rows; i++, count--)
+	{
+		intervals = count - 1; // отново намаляване с единица, за да могат интервалите да съвпаднат
+		while (intervals)
+		{
+			cout << "  ";
+			intervals--;
+		}
+		for (int j = count - 1; j < rows - count + 1; j++)
+			cout << A[i][j] << " ";
+		cout << endl;
+	}
+}
+
+//
+
+
+void SidePyramid() // извеждане на пирамидите от горната функция, но настрани (легнали)
+{
+	int count1 = 2, interval = 0;
+	for (int i = 0, j = 0; i <= rows / 2; i++)
+	{
+		if (i == rows / 2) // когато достигне средата на матрицата
+			for (int j = 0; j < rows; j++) // извежда елементите без добавяне на празни интервали и отнемане на цифри от реда
+				cout << A[i][j] << " ";
+		else // иначе, ако не е досигната средата на матрицата
+		{
+			for (j = 0; j < count1 / 2; j++)
+				cout << A[i][j] << " ";
+			interval = rows - count1; // за необходимите интервали, които да се изведат
+			while (interval)
+			{
+				cout << "  ";
+				interval--;
+			}
+			for (j = rows - count1 + j; j < rows; j++) // вторият цикъл обхожда елементите след средата на даденият ред
+				cout << A[i][j] << " ";
+			count1 += 2;
+		}
+		cout << endl;
+	}
+	for (int i = rows / 2 + 1, j = 0; i < rows; i++)
+	{
+		count1 -= 2;
+		for (j = 0; j < count1 / 2; j++)
+			cout << A[i][j] << " ";
+		interval = rows - count1; // за необходимите интервали, които да се изведат
+		while (interval > 0)
+		{
+			cout << "  ";
+			interval--;
+		}
+		for (j = rows - count1 + j; j < rows; j++) // вторият цикъл обхожда елементите след средата на даденият ред
+			cout << A[i][j] << " ";
+		cout << endl;
+	}
+}
+
+void WallElementsOnly() // извеждане само на елементите по стената на матрицата
+{
+	int intervals = 0;
+	for (int i = 0; i < rows; i++)
+	{
+		if (i == 0 || i == rows - 1) // ако се обхожда долната или горната стена на матрицата
+			for (int j = 0; j < rows; j++)
+				cout << A[i][j] << " ";
+		else // иначе, ако елементът не е от някоя стена на матрицата
+		{
+			cout << A[i][0] << " "; // извежда елементът от лявата стена
+			intervals = rows - 2;
+			while (intervals) // извежда необходимият брой интервали
+			{
+				cout << "  ";
+				intervals--;
+			}
+			cout << A[i][rows - 1]; // извежда елементът от дясната стена на матрицата
+		}
+		cout << endl;
+	}
+}
+
+int Area() // извеждане на елементите на матрицата по избрана от потребителя зона
+{
+	int firstrow = 0, lastrow = 0, firstcolumn = 0, lastcolumn = 0, intervals = 0;
+	cout << "\nEnter frow which row you want to start: ";
+	cin >> firstrow;
+	cout << "Enter from which column you want to start: ";
+	cin >> firstcolumn;
+	cout << "Enter to which column you want to read: ";
+	cin >> lastcolumn;
+	cout << "Enter to which row you want to read: ";
+	cin >> lastrow;
+
+	if (firstrow > lastrow || firstcolumn > lastcolumn || lastrow > rows || lastcolumn > rows)
+	{
+		cout << "Bad input!\n";
+		return 0;
+	}
+
+	for (int i = 0; i <= rows; i++)
+	{
+		if (i < firstrow || i > lastrow) // ако не се намираме в избраният от потребителя ред
+			cout << endl;
+		else // ако сме в избран за извеждане ред
+		{
+			intervals = firstcolumn;
+			while (intervals > 0) // извежда необходимият брой интервали
+			{
+				cout << "  ";
+				intervals--;
+			}
+			for (int j = firstcolumn; j <= lastcolumn; j++) // след което извежда избраните елементи
+				cout << A[i][j] << " ";
+			cout << endl;
+		}
+	}
+}
+
+
+int main()
+{
+	cout << "0 - Exit\n";
+	cout << "1 - Enter size of the matrix and it's elements\n";
+	cout << "2 - Display the matrix\n";
+	cout << "3 - Display the elements from the main diagonal\n";
+	cout << "4 - Dispay the elements from the secondary diagonal\n";
+	cout << "5 - Display the elements that are over the main diagonal including him\n";
+	cout << "6 - Display the elements that are under the main diagonal including him\n";
+	cout << "7 - Display the elements that are under the main diagonal whitout him\n";
+	cout << "8 - Display the elements that ared undrer the secondary diagonal including him\n";
+	cout << "9 - Display the elements like a pyramid with reverse pyramid over the first (for odd matrices only)\n";
+	cout << "10 - Display the elements like a side pyramid with reverse side pyramid over the first (for odd matrices only)\n";
+	cout << "11 - Display the elements from the edges of the matrix/n";
+	cout << "12 - Dipley the elements from the selected area from the matrix\n";
+
+	unsigned choice = 0;
+	cout << "\n\nSelect a number from the menu above: ";
+	cin >> choice;
+
+	while (choice)
+	{
+		switch (choice)
+		{
+		case 0: break;
+		case 1: Read(); break;
+		case 2: Print(); break;
+		case 3: MainDiagonal(); break;
+		case 4: SecondaryDiagonal(); break;
+		case 5: OverMainDiagonal(); break;
+		case 6: UnderMainDiagonal(); break;
+		case 7: UnderMainDiagonal2(); break;
+		case 8: UnderSecondaryDiagonal(); break;
+		case 9: Pyramid(); break;
+		case 10: SidePyramid(); break;
+		case 11: WallElementsOnly(); break;
+		case 12: Area(); break;
+		default: cout << "There is no such number from the menu."; break;
+		}
+		cout << "\n\nSelect a number from the menu above: ";
+		cin >> choice;
+	}
+}
